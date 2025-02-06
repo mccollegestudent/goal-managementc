@@ -1,0 +1,50 @@
+$sidebar-bg-color: white !default;
+$sidebar-color: black !default;
+$sidebar-width: 270px !default;
+$sidebar-collapsed-width: 80px !default;
+$highlight-color: #d8d8d8 !default;
+$submenu-bg-color: #2b2b2b !default;
+$submenu-bg-color-collapsed: #2b2b2b !default;
+$icon-bg-color: none !default;
+$icon-size: 48px !default;
+$submenu-indent: 24px !default;
+$breakpoint-xs: 480px !default;
+$breakpoint-sm: 576px !default;
+$breakpoint-md: 768px !default;
+$breakpoint-lg: 992px !default;
+$breakpoint-xl: 1200px !default;
+$breakpoint-xxl: 1600px !default;
+
+
+@import '../../node_modules/react-pro-sidebar/dist/scss/styles.scss';
+
+.pro-icon-wrapper {
+    background-color: $icon-bg-color;
+
+    &:hover {
+        background-color: #a855f7;
+        color: #ffffff;
+    }
+}
+
+
+.pro-sidebar .pro-menu .pro-menu-item>.pro-inner-item:hover {
+    color: $sidebar-color;
+
+    .pro-icon-wrapper {
+        background-color: #a855f7;
+        color: #ffffff;
+    }
+
+    &:hover {
+        color: $sidebar-color;
+    }
+}
+
+.pro-sidebar .pro-menu .pro-menu-item>.pro-inner-item:focus {
+    color: #983dc6;
+    .pro-icon-wrapper {
+        background-color: #a855f7;
+        color: #ffffff;
+    }
+}

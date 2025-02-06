@@ -1,0 +1,82 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = 'goal-frontend-app'
+        DOCKER_TAG = "${BUILD_NUMBER}"
+        AWS_EC2_HOST = '18.217.187.244'  // Public IP of your EC2 instance
+        AWS_USER = 'ec2-user'  // Username for EC2 (Amazon Linux or Ubuntu)
+        FRONTEND_FOLDER = 'GM_front-end' // Folder containing the frontend code
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // Checkout the code from GitHub
+                    checkout scm
+                }
+            }
+        }
+
+        stage('Build Frontend Docker Image') {
+            steps {
+                script {
+                    // Build the React app Docker image locally (on Jenkins server) using the Dockerfile
+                    dir("${FRONTEND_FOLDER}") {
+                        sh "docker build --no-cache -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                    }
+                }
+            }
+        }
+
+        // Test Frontend (commented out block for now)
+        // stage('Test Frontend') {
+        //     steps {
+        //         script {
+        //             // Run tests (e.g., Jest tests) on the frontend, if needed
+        //             dir("${FRONTEND_FOLDER}") {
+        //                 sh 'npm install'  // Install dependencies
+        //                 sh 'npm run test' // Run tests
+        //             }
+        //         }
+        //     }
+        // }
+
+        stage('Deploy to EC2') {
+            steps {
+                script {
+                    // SSH into EC2 and stop/remove any old container
+                    sshagent(['ec2-private']) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no $AWS_USER@$AWS_EC2_HOST 'docker ps -a --filter "name=${DOCKER_IMAGE}" -q | xargs -r docker stop || true'
+                            ssh -o StrictHostKeyChecking=no $AWS_USER@$AWS_EC2_HOST 'docker ps -a --filter "name=${DOCKER_IMAGE}" -q | xargs -r docker rm || true'
+
+                            # Ensure frontend folder on EC2 has proper permissions
+                            ssh -o StrictHostKeyChecking=no $AWS_USER@$AWS_EC2_HOST 'chmod -R 755 /home/$AWS_USER/${FRONTEND_FOLDER} || true'
+
+                            # Copy the code from the Jenkins workspace to the EC2 instance
+                            scp -o StrictHostKeyChecking=no -r ${WORKSPACE}/${FRONTEND_FOLDER} $AWS_USER@$AWS_EC2_HOST:/home/$AWS_USER/${FRONTEND_FOLDER}
+
+                            # SSH into EC2, navigate to the frontend folder, build the Docker image there, and run it
+                            ssh -o StrictHostKeyChecking=no $AWS_USER@$AWS_EC2_HOST <<EOF
+                                cd /home/$AWS_USER/${FRONTEND_FOLDER}  # Change to the frontend folder
+                                docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .  # Build Docker image
+                                docker run -d -p 80:80 --name ${DOCKER_IMAGE} ${DOCKER_IMAGE}:${DOCKER_TAG}  # Run container
+                            
+                        """
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Frontend pipeline executed successfully!'
+        }
+        failure {
+            echo 'Frontend pipeline failed!'
+        }
+    }
+}
