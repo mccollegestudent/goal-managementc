@@ -18,6 +18,7 @@ public class MailSenderService {
             message.setSubject(subject);
             message.setText(body);
             mailSender.send(message);
+            System.out.print("javamail sends email with body: " + body);
         }catch (Exception e){
             System.out.println("Failed To send message notification");
 

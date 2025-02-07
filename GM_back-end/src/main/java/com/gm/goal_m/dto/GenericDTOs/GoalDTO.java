@@ -9,7 +9,7 @@ import com.gm.goal_m.model.Goal;
 import lombok.Data;
 @Data
 public class GoalDTO {
-     private Long id;
+    private Long id;
     private String objective;
     private String description;
     private LocalDate startDate;
