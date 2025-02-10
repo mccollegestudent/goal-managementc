@@ -44,7 +44,9 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${IMAGE_NAME}:${COMMIT_ID} -f ${PROJECT_SUBFOLDER}/Dockerfile ${PROJECT_SUBFOLDER}"
+                sh """
+                docker build --no-cache -t ${IMAGE_NAME}:${COMMIT_ID} -t ${IMAGE_NAME}:latest -f ${PROJECT_SUBFOLDER}/Dockerfile ${PROJECT_SUBFOLDER}
+                """
             }
         }
 
@@ -67,7 +69,7 @@ pipeline {
                 -e JWT_SECRET=${JWT_SECRET} \
                 -e MAIL_SENDING_EMAIL=${MAIL_SENDING_EMAIL} \
                 -e MAIL_APP_PASSWORD=${MAIL_APP_PASSWORD} \
-                ${IMAGE_NAME}:${COMMIT_ID}
+                ${IMAGE_NAME}:latest
                 """
             }
         }
