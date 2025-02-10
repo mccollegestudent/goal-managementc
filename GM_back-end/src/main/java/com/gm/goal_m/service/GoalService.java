@@ -3,7 +3,6 @@ package com.gm.goal_m.service;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gm.goal_m.dto.GoalDTOs.AddGoalDTO;
@@ -17,13 +16,11 @@ import com.gm.goal_m.repository.GoalRepository;
 public class GoalService {
 
     private  GoalRepository goalRepository;
-    private UserService userService;
     private MailSenderService mailService;
 
    
     public GoalService (GoalRepository goalRepository, UserService userService, MailSenderService mailService){
         this.goalRepository = goalRepository;
-        this.userService = userService;
         this.mailService = mailService;
     }
         

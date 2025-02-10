@@ -2,7 +2,6 @@ package com.gm.goal_m.service;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -11,10 +10,6 @@ import com.gm.goal_m.dto.GenericDTOs.GoalDTO;
 import com.gm.goal_m.dto.GenericDTOs.TaskDTO;
 import com.gm.goal_m.dto.GenericDTOs.TimeFrameDTO;
 import com.gm.goal_m.dto.GenericDTOs.UserDTO;
-import com.gm.goal_m.model.Goal;
-import com.gm.goal_m.model.Task;
-import com.gm.goal_m.model.TimeFrame;
-import com.gm.goal_m.model.User;
 
 
 @Service

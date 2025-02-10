@@ -13,7 +13,6 @@ import io.jsonwebtoken.security.SignatureException;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 @Service
@@ -23,8 +22,6 @@ public class JwtService {
     private String secretKey;
 
     private final JwtConfiguration jwtConfiguration;
-
-    @Autowired
     public JwtService(JwtConfiguration jwtConfiguration) {
         this.jwtConfiguration = jwtConfiguration;
     }

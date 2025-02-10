@@ -3,7 +3,6 @@ package com.gm.goal_m.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gm.goal_m.dto.TimeFrameDTOs.AddTimeFrameByTaskIdDTO;
@@ -23,12 +22,11 @@ import java.util.ArrayList;
 @Service
 public class TimeFrameService {
     private TimeFrameRepository timeFrameRepository;
-    private TaskService taskService;
 
-    @Autowired
+
     public TimeFrameService(TimeFrameRepository timeFrameRepository, TaskService taskService) {
         this.timeFrameRepository = timeFrameRepository;
-        this.taskService = taskService;
+
     }
 
     public TimeFrame update(TimeFrame timeFrame) {

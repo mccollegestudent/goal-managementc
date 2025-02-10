@@ -2,7 +2,6 @@ package com.gm.goal_m.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gm.goal_m.dto.TaskDTOs.AddTaskByGoalIdDTO;
@@ -17,7 +16,6 @@ public class TaskService {
     private TaskRepository taskRepository;
     private GoalService goalService;
 
-    @Autowired
     public TaskService(TaskRepository taskRepository, GoalService goalService){
         this.taskRepository = taskRepository;
         this.goalService = goalService;
