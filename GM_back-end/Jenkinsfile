@@ -2,58 +2,61 @@ pipeline {
     agent any
 
     environment {
+        IMAGE_NAME = "springboot-app"
+        PROJECT_SUBFOLDER = "GM_back-end"
         DATABASE_URL = credentials('DATABASE_URL')
         DATABASE_USER = credentials('DATABASE_USER')
         DATABASE_PASSWORD = credentials('DATABASE_PASSWORD')
         JWT_SECRET = credentials('JWT_SECRET')
         MAIL_SENDING_EMAIL = credentials('MAIL_SENDING_EMAIL')
         MAIL_APP_PASSWORD = credentials('MAIL_APP_PASSWORD')
-        IMAGE_NAME = "springboot-app"
-        PROJECT_SUBFOLDER = "GM_back-end"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                checkout scm  
+                checkout scm
             }
         }
 
         stage('Build & Test') {
             steps {
                 dir(PROJECT_SUBFOLDER) {
-                    sh 'mvn clean package -DskipTests'  
-                }
+                    sh 'mvn clean package -DskipTests'
+                    // sh 'mvn test'
             }
         }
 
         stage('Get Commit ID') {
             steps {
-                sh "cd ${PROJECT_SUBFOLDER} && git rev-parse --short HEAD > commit_id.txt"
                 script {
-                    env.COMMIT_ID = readFile("${PROJECT_SUBFOLDER}/commit_id.txt").trim()
+                    env.COMMIT_ID = sh(script: "git -C ${PROJECT_SUBFOLDER} rev-parse --short HEAD", returnStdout: true).trim()
                 }
             }
         }
 
-        stage('Remove Previous Containers') {
+        stage('Remove Old Containers') {
             steps {
-                sh "docker rm -f \$(docker ps -aq --filter \"name=${IMAGE_NAME}\") || true"
+                sh "docker ps -aq --filter \"name=${IMAGE_NAME}\" | xargs -r docker rm -f || true"
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build New Docker Image') {
             steps {
-                sh """
-                docker build --no-cache -t ${IMAGE_NAME}:${COMMIT_ID} -t ${IMAGE_NAME}:latest -f ${PROJECT_SUBFOLDER}/Dockerfile ${PROJECT_SUBFOLDER}
-                """
+                sh "docker build -t ${IMAGE_NAME}:${COMMIT_ID} -t ${IMAGE_NAME}:latest -f ${PROJECT_SUBFOLDER}/Dockerfile ${PROJECT_SUBFOLDER}"
+            }
+        }
+
+        stage('Remove Old Docker Images') {
+            steps {
+                sh "docker images --filter=reference='${IMAGE_NAME}:*' --format '{{.ID}}' | xargs -r docker rmi -f || true"
+                sh "docker image prune -af || true"
             }
         }
 
         stage('Run New Container') {
             steps {
                 sh """
-                docker rm -f ${IMAGE_NAME} || true
                 docker run -d -p 8081:8080 --name ${IMAGE_NAME} \
                 --restart always \
                 -e DATABASE_URL=${DATABASE_URL} \
@@ -66,13 +69,7 @@ pipeline {
                 """
             }
         }
-
-        stage('Remove Old Docker Images') {
-            steps {
-                sh "docker image prune -af || true"
-            }
-        }
-        }
+    }
 
     post {
         success {
