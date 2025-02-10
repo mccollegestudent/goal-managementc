@@ -2,9 +2,7 @@ package com.gm.goal_m.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,7 +17,6 @@ import com.gm.goal_m.dto.GenericDTOs.GetIdDTO;
 import com.gm.goal_m.dto.GoalDTOs.AddGoalDTO;
 import com.gm.goal_m.dto.GoalDTOs.UpdateGoalDTO;
 import com.gm.goal_m.model.Goal;
-import com.gm.goal_m.model.Task;
 import com.gm.goal_m.model.User;
 import com.gm.goal_m.service.GoalService;
 import com.gm.goal_m.service.UserService;
@@ -37,7 +34,6 @@ public class GoalController {
     private GoalService goalService;
     private UserService userService;
 
-     @Autowired
     public GoalController (GoalService goalService, UserService userService){
         this.goalService = goalService;
         this.userService = userService;

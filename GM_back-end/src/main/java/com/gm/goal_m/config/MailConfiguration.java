@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 @Configuration
 public class MailConfiguration {
-    private String senderEmail;
-    private String senderAppPassword;
+
     @Bean
     public JavaMailSender getJavaMailSender(@Value("${spring.mail.username}") String senderEmail, @Value("${spring.mail.password}") String senderAppPassword) {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();

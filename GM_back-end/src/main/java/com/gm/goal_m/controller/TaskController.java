@@ -1,9 +1,5 @@
 package com.gm.goal_m.controller;
 
-
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -13,9 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gm.goal_m.dto.GenericDTOs.GetIdDTO;
 import com.gm.goal_m.dto.TaskDTOs.AddTaskByGoalIdDTO;
 import com.gm.goal_m.dto.TaskDTOs.UpdateTaskDTO;
-import com.gm.goal_m.model.Goal;
 import com.gm.goal_m.model.Task;
-import com.gm.goal_m.model.User;
 import com.gm.goal_m.service.TaskService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +28,6 @@ public class TaskController {
 
     private TaskService taskService;
 
-   @Autowired
     public TaskController (TaskService taskService){
         this.taskService = taskService; 
     }

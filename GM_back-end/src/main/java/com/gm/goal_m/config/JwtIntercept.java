@@ -1,6 +1,5 @@
 package com.gm.goal_m.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -14,7 +13,6 @@ public class JwtIntercept  implements HandlerInterceptor{
 
     private final JwtService jwtService;
 
-    @Autowired
     public JwtIntercept (JwtService jwtService){
         this.jwtService = jwtService;
     }

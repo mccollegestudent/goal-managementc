@@ -1,6 +1,5 @@
 package com.gm.goal_m.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -12,7 +11,6 @@ public class PathConfig implements WebMvcConfigurer {
 
     private JwtIntercept jwtInterceptor;
 
-    @Autowired
     public PathConfig (JwtIntercept jwtInterceptor){
         this.jwtInterceptor = jwtInterceptor;
     }
