@@ -23,7 +23,6 @@ pipeline {
             steps {
                 dir(PROJECT_SUBFOLDER) {
                     sh 'mvn clean package -DskipTests'  
-                    // sh 'mvn test'  
                 }
             }
         }
@@ -51,15 +50,17 @@ pipeline {
 
         stage('Remove Old Docker Images') {
             steps {
-                sh "docker images --filter=reference='${IMAGE_NAME}:*' --format '{{.ID}}' | xargs -r docker rmi -f"
-                sh "docker image prune -af"
+                sh "docker images --filter=reference='${IMAGE_NAME}:*' --format '{{.ID}}' | xargs -r docker rmi -f || true"
+                sh "docker image prune -af || true"
             }
         }
 
         stage('Run New Container') {
             steps {
                 sh """
+                docker rm -f ${IMAGE_NAME} || true
                 docker run -d -p 8081:8080 --name ${IMAGE_NAME} \
+                --restart always \
                 -e DATABASE_URL=${DATABASE_URL} \
                 -e DATABASE_USER=${DATABASE_USER} \
                 -e DATABASE_PASSWORD=${DATABASE_PASSWORD} \
