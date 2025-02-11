@@ -70,7 +70,7 @@ public class JwtService {
             System.out.println("Token has expired: " + e.getMessage());
             return false;
         } catch (io.jsonwebtoken.SignatureException e) {
-            System.out.println("Invalid token signature : " + e.getMessage());
+            System.out.println("Invalid token signature: " + e.getMessage());
             return false;
         } catch (io.jsonwebtoken.JwtException e) {
             System.out.println("Invalid token: " + e.getMessage());
