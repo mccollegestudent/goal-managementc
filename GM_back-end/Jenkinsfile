@@ -44,9 +44,13 @@ pipeline {
 
         stage('Build New Docker Image') {
             steps {
-                sh "docker build -t ${IMAGE_NAME}:${COMMIT_ID} -t ${IMAGE_NAME}:latest -f ${PROJECT_SUBFOLDER}/Dockerfile ${PROJECT_SUBFOLDER}"
+                sh """
+                docker build -t ${IMAGE_NAME}:${COMMIT_ID} -t ${IMAGE_NAME}:latest -f ${PROJECT_SUBFOLDER}/Dockerfile ${PROJECT_SUBFOLDER}
+                docker images | grep ${IMAGE_NAME}  # Debugging: Check if the image was built
+                """
             }
         }
+
 
         stage('Remove Old Docker Images') {
             steps {
