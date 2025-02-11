@@ -19,7 +19,7 @@ pipeline {
             }
         }
 
-        stage('Build & Test') {
+        stage('Build then Test') {
             steps {
                 dir(PROJECT_SUBFOLDER) {
                     sh 'mvn clean package -DskipTests'  
