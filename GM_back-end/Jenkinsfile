@@ -31,7 +31,6 @@ pipeline {
             steps {
                 dir(PROJECT_SUBFOLDER) {
                     sh "mvn clean package -DskipTests"
-                    
                     // sh 'mvn test' 
                 }
             }
