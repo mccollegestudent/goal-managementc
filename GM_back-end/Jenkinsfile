@@ -30,7 +30,7 @@ pipeline {
         stage('Build & Test') {
             steps {
                 dir(PROJECT_SUBFOLDER) {
-                    sh 'mvn clean package -DskipTests'
+                    sh "mvn clean package -DskipTests"
                     
                     // sh 'mvn test' 
                 }
@@ -45,19 +45,17 @@ pipeline {
                 """
             }
         }
+
         stage('Remove Old Containers') {
             steps {
-                sh """
-                docker ps -aq --filter "ancestor=${IMAGE_NAME}" | xargs -r docker stop
-                docker ps -aq --filter "ancestor=${IMAGE_NAME}" | xargs -r docker rm
-                """
+                sh "docker rm -f ${IMAGE_NAME} || true"
             }
         }
 
         stage('Run New Container') {
             steps {
                 sh """
-                docker run -d -p 8081:8080 --name ${IMAGE_NAME} \
+                docker run -d -p 8081:8080 --name ${IMAGE_NAME}\
                 --restart always \
                 -e DATABASE_URL=${DATABASE_URL} \
                 -e DATABASE_USER=${DATABASE_USER} \
@@ -70,13 +68,9 @@ pipeline {
             }
         }
 
-        stage('Remove Old Images') {
+        stage('Remove unused resources') {
             steps {
-                sh """
-                docker images --filter=reference='${IMAGE_NAME}:*' --format '{{.ID}}' | xargs -r docker rmi -f
-                docker image prune -af
-                docker system prune
-                """
+                sh "docker image prune -af"   
             }
         }
     }
