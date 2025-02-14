@@ -45,10 +45,12 @@ pipeline {
                 """
             }
         }
-
         stage('Remove Old Containers') {
             steps {
-                sh "docker rm -f ${IMAGE_NAME} || true"
+                sh """
+                docker ps -aq --filter "ancestor=${IMAGE_NAME}" | xargs -r docker stop
+                docker ps -aq --filter "ancestor=${IMAGE_NAME}" | xargs -r docker rm
+                """
             }
         }
 
@@ -73,6 +75,7 @@ pipeline {
                 sh """
                 docker images --filter=reference='${IMAGE_NAME}:*' --format '{{.ID}}' | xargs -r docker rmi -f
                 docker image prune -af
+                docker system prune
                 """
             }
         }
