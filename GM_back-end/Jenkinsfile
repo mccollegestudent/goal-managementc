@@ -67,14 +67,23 @@ pipeline {
                 """
             }
         }
+
+        stage('Remove Old Images') {
+            steps {
+                sh """
+                docker images --filter=reference='${IMAGE_NAME}:*' --format '{{.ID}}' | xargs -r docker rmi -f
+                docker image prune -af
+                """
+            }
+        }
     }
 
     post {
         success {
-            echo "✅ Deployment successful! Running version: ${COMMIT_ID}"
+            echo "Deployment successful! Running version: ${COMMIT_ID}"
         }
         failure {
-            echo "❌ failed! Check logs."
+            echo "❌ failed! Check logs. commit id: ${COMMIT_ID}"
         }
     }
 }
